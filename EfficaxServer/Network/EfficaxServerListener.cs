@@ -1,4 +1,4 @@
-﻿namespace EfficaxServer.Network;
+﻿namespace EfficaxServer.Network; //{}
 
 public class EfficaxServerListener : INetEventListener
 {

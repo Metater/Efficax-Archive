@@ -1,4 +1,4 @@
-﻿namespace EfficaxServer;
+﻿namespace EfficaxServer; //{}
 
 public class EfficaxServer
 {
