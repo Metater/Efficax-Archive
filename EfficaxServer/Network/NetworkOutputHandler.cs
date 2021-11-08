@@ -15,7 +15,7 @@ public class NetworkOutputHandler
         while (true)
         {
             queuedPackets.WaitOne();
-            while (!queuedPackets.IsEmpty)
+            while (!queuedPackets.IsEmpty) // is empty may be bad idea, look at examples
             {
                 // do double check before resetting event
             }
