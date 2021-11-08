@@ -15,4 +15,8 @@
     <Folder Include="Extensions\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EfficaxShared\EfficaxShared.csproj" />
+  </ItemGroup>
+
 </Project>
