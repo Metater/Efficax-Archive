@@ -12,4 +12,10 @@ public sealed class NetworkOutput
         this.packet = packet;
         this.deliveryMethod = deliveryMethod;
     }
+
+    public void Send(BitWriter writer)
+    {
+        packet.WriteOut(writer);
+        peer.Send(writer.Assemble(), deliveryMethod);
+    }
 }

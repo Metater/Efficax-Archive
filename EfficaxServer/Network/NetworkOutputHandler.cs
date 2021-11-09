@@ -2,29 +2,62 @@ namespace EfficaxServer.Network; //{}
 
 public class NetworkOutputHandler
 {
-    private ConcurrentQueue<NetworkOutput> queuedPackets = new ConcurrentQueue<NetworkOutput>();
-    private ManualResetEvent queuedPacket = new ManualResetEvent(false);
+    private readonly ConcurrentQueue<NetworkOutput> queuedPackets = new();
+    private readonly ManualResetEvent canQueue = new(true);
+    private readonly ManualResetEvent queuedPacket = new(false);
 
-    public NetworkOutputHandler()
-    {
+    private readonly BitWriter writer = new(128, 64);
 
-    }
+    private bool shuttingDown = false;
+
+    public int resets = 0;
+    public int sends = 0;
 
     public void Start()
     {
+        if (shuttingDown) throw new Exception("Cannot restart!");
         while (true)
         {
-            queuedPackets.WaitOne();
-            while (!queuedPackets.IsEmpty) // is empty may be bad idea, look at examples
+            queuedPacket.WaitOne();
+            if (shuttingDown)
             {
-                // do double check before resetting event
+                canQueue.Dispose();
+                queuedPacket.Dispose();
+                break;
             }
+            while (!queuedPackets.IsEmpty)
+            {
+                if (queuedPackets.TryDequeue(out NetworkOutput networkOutput))
+                {
+                    //networkOutput.Send(writer);
+                    int s = 0;
+                    for (int i = 0; i < 100000; i++) s += i;
+                    sends++;
+                    writer.Reset();
+                }
+                if (sends == 1001) throw new Exception("Done");
+            }
+            canQueue.Reset();
+            if (queuedPackets.IsEmpty && !shuttingDown)
+            {
+                queuedPacket.Reset();
+                resets++;
+            }
+            canQueue.Set();
         }
+    }
+
+    public void Stop()
+    {
+        shuttingDown = true;
+        queuedPacket.Set();
     }
 
     public void Send(NetworkOutput networkOutput)
     {
+        canQueue.WaitOne();
         queuedPackets.Enqueue(networkOutput);
+        queuedPacket.Set();
     }
 
     public void Send(NetPeer peer, Packet packet, DeliveryMethod deliveryMethod)

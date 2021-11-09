@@ -6,9 +6,12 @@ global using System.Text;
 global using System.Threading.Tasks;
 global using System.Net;
 global using System.Net.Sockets;
+global using System.Diagnostics;
 
 global using EfficaxServer.Network;
 
 global using EfficaxShared.Network.Packets;
+
+global using BitManipulation;
 
 global using LiteNetLib;
