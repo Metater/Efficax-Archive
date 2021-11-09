@@ -10,9 +10,6 @@ public class NetworkOutputHandler
 
     private bool shuttingDown = false;
 
-    public int resets = 0;
-    public int sends = 0;
-
     public void Start()
     {
         if (shuttingDown) throw new Exception("Cannot restart!");
@@ -29,20 +26,12 @@ public class NetworkOutputHandler
             {
                 if (queuedPackets.TryDequeue(out NetworkOutput networkOutput))
                 {
-                    //networkOutput.Send(writer);
-                    int s = 0;
-                    for (int i = 0; i < 100000; i++) s += i;
-                    sends++;
+                    networkOutput.Send(writer);
                     writer.Reset();
                 }
-                if (sends == 1001) throw new Exception("Done");
             }
             canQueue.Reset();
-            if (queuedPackets.IsEmpty && !shuttingDown)
-            {
-                queuedPacket.Reset();
-                resets++;
-            }
+            if (queuedPackets.IsEmpty && !shuttingDown) queuedPacket.Reset();
             canQueue.Set();
         }
     }
