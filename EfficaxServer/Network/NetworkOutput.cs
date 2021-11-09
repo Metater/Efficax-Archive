@@ -17,5 +17,6 @@ public sealed class NetworkOutput
     {
         packet.WriteOut(writer);
         peer.Send(writer.Assemble(), deliveryMethod);
+        writer.Reset();
     }
 }
