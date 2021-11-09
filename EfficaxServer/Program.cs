@@ -16,3 +16,8 @@
 // for inter efficax network requests trust them as a continuation of something, provide all context in the message,
 // it will be sent then proccessed remotely and sent back with the necessary context
 
+// Eventually encapsulate data that will be sent to places other than a NetPeer
+// Other places: Auth Server, DB, Other Servers, Market Servers
+
+// DISAJSADSIJAJIOAIJSDIJAIDSI
+// Net in messages can even be from the server itself, have many inbound data types
