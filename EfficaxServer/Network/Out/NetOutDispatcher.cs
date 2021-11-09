@@ -1,17 +1,17 @@
-namespace EfficaxServer.Network; //{}
+namespace EfficaxServer.Network.Out; //{}
 
-public class NetworkOutputHandler
+public class NetOutDispatcher
 {
-    private ChannelWriter<NetworkOutput> channelWriter;
+    private ChannelWriter<OutboundPacket> channelWriter;
 
     private readonly BitWriter bitWriter = new(128, 64);
 
-    public void Start()
+    public Task Start()
     {
-        var channel = Channel.CreateUnbounded<NetworkOutput>(new UnboundedChannelOptions() { SingleReader = true });
+        var channel = Channel.CreateUnbounded<OutboundPacket>(new UnboundedChannelOptions() { SingleReader = true });
         var reader = channel.Reader;
         channelWriter = channel.Writer;
-        Task.Run(async () =>
+        return Task.Run(async () =>
         {
             while (await reader.WaitToReadAsync())
             {
@@ -23,14 +23,14 @@ public class NetworkOutputHandler
         });
     }
 
-    public void Send(NetworkOutput networkOutput)
+    public void Send(OutboundPacket outboundPacket)
     {
-        channelWriter.TryWrite(networkOutput);
+        channelWriter.TryWrite(outboundPacket);
     }
 
     public void Send(NetPeer peer, Packet packet, DeliveryMethod deliveryMethod)
     {
-        Send(new NetworkOutput(peer, packet, deliveryMethod));
+        Send(new OutboundPacket(peer, packet, deliveryMethod));
     }
 
     public void Stop()

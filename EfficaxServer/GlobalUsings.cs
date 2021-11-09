@@ -10,6 +10,8 @@ global using System.Net.Sockets;
 global using System.Diagnostics;
 
 global using EfficaxServer.Network;
+global using EfficaxServer.Network.In;
+global using EfficaxServer.Network.Out;
 
 global using EfficaxShared.Network.Packets;
 
