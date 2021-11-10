@@ -5,7 +5,6 @@ public class EfficaxServer
     public readonly EfficaxServerListener listener;
     public readonly NetManager server;
 
-    
     public readonly NetOutDispatcher netOutDispatcher = new();
 
     public readonly PeerClientMap peerClientMap = new();

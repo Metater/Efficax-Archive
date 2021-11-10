@@ -16,6 +16,11 @@ public class EfficaxClient
         this.client = client;
     }
 
+    public void Send(Packet packet, deliveryMethod)
+    {
+        efficaxServer.netOutDispatcher.Send(client, packet, deliveryMethod);
+    }
+
     public ulong GetCurrentZone()
     {
         if (!zones.TryPeek(out ulong currentZone)) currentZone = 0;
