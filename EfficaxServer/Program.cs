@@ -1,4 +1,6 @@
-﻿Console.WriteLine("Hello, World!");
+﻿using EfficaxServer;
+
+Console.WriteLine("Hello, World!");
 
 
 // NetInDispatcher routes packets into queues for each of the zones, EfficaxServer or higher level parts of it like the auth server part or server network manager

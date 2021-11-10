@@ -2,6 +2,7 @@ namespace EfficaxServer.Network.In; //{}
 
 public sealed class InboundData
 {
+    /*
     public readonly NetPeer sender;
     public readonly Packet packet;
     public readonly DeliveryMethod deliveryMethod;
@@ -12,4 +13,5 @@ public sealed class InboundData
         this.packet = packet;
         this.deliveryMethod = deliveryMethod;
     }
+    */
 }

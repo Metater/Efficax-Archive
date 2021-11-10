@@ -16,7 +16,7 @@ public class EfficaxClient
         this.client = client;
     }
 
-    public void Send(Packet packet, deliveryMethod)
+    public void Send(Packet packet, DeliveryMethod deliveryMethod)
     {
         efficaxServer.netOutDispatcher.Send(client, packet, deliveryMethod);
     }

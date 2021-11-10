@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="BitManipulation" Version="1.0.1" />
+	<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.9.0" PrivateAssets="all" />
+	<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.0.0" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
