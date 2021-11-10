@@ -5,12 +5,10 @@ using System.Text;
 
 namespace EfficaxShared.Network.Data
 {
-    public class EntityPositionData : IData<EntityPositionData>
+    public struct EntityPositionData : IData<EntityPositionData>
     {
         // byte layer entity is on?
         public float x, y;
-
-        public EntityPositionData() { }
 
         public EntityPositionData(float x, float y)
         {
