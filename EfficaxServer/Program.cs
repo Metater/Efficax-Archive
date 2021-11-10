@@ -22,7 +22,7 @@
 // DISAJSADSIJAJIOAIJSDIJAIDSI
 // Net in messages can even be from the server itself, have many inbound data types
 
-
+// using as to cast stuff calso, make it part of the base class have a static method then use as
 
 
 

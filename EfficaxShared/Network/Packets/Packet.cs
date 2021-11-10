@@ -11,7 +11,7 @@ namespace EfficaxShared.Network.Packets
 
         public static Packet GetPacket(BitReader reader)
         {
-            switch ((PacketType)reader.GetUShort())
+            switch (reader.GetPacketType())
             {
                 case PacketType.GroupedPacket:
                     return new GroupedPacket().ReadIn(reader);
