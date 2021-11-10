@@ -6,7 +6,7 @@ public sealed class OutboundNetPeerPacket : OutboundData
     public readonly Packet packet;
     public readonly DeliveryMethod deliveryMethod;
 
-    public OutboundPacket(NetPeer receiver, Packet packet, DeliveryMethod deliveryMethod)
+    public OutboundNetPeerPacket(NetPeer receiver, Packet packet, DeliveryMethod deliveryMethod)
     {
         Type = OutboundDataType.NetPeerPacket;
         this.receiver = receiver;

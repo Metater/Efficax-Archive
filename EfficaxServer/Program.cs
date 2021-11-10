@@ -21,3 +21,18 @@
 
 // DISAJSADSIJAJIOAIJSDIJAIDSI
 // Net in messages can even be from the server itself, have many inbound data types
+
+
+
+
+
+// look for physics interactions on predecided ticks, as object gets closer throw in another group and do the approach tick faster and faster
+
+// positions for entities sent to player are offset from the player, anything close enough to effect the player in some way
+
+
+
+
+
+
+

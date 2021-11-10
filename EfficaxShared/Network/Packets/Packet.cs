@@ -6,6 +6,18 @@ namespace EfficaxShared.Network.Packets
     {
         public PacketType Type { get; protected set; }
 
-        public abstract void WriteOut(BitWriter writer);
+        public abstract Packet ReadIn(BitReader reader);
+        public abstract Packet WriteOut(BitWriter writer);
+
+        public static Packet GetPacket(BitReader reader)
+        {
+            switch ((PacketType)reader.GetUShort())
+            {
+                case PacketType.GroupedPacket:
+                    return new GroupedPacket().ReadIn(reader);
+                default:
+                    return null;
+            }
+        }
     }
 }

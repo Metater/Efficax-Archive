@@ -2,35 +2,35 @@ namespace EfficaxServer.Network.Out; //{}
 
 public class NetOutDispatcher
 {
-    private ChannelWriter<OutboundPacket> channelWriter;
+    private ChannelWriter<OutboundData> channelWriter;
 
     private readonly BitWriter bitWriter = new(128, 64);
 
     public Task Start()
     {
-        var channel = Channel.CreateUnbounded<OutboundPacket>(new UnboundedChannelOptions() { SingleReader = true });
+        var channel = Channel.CreateUnbounded<OutboundData>(new UnboundedChannelOptions() { SingleReader = true });
         var reader = channel.Reader;
         channelWriter = channel.Writer;
         return Task.Run(async () =>
         {
             while (await reader.WaitToReadAsync())
             {
-                while (reader.TryRead(out var networkOutput))
+                while (reader.TryRead(out var outboundData))
                 {
-                    networkOutput.Send(bitWriter);
+                    outboundData.Send(bitWriter);
                 }
             }
         });
     }
 
-    public void Send(OutboundPacket outboundPacket)
+    public void Send(OutboundData outboundData)
     {
-        channelWriter.TryWrite(outboundPacket);
+        channelWriter.TryWrite(outboundData);
     }
 
     public void Send(NetPeer peer, Packet packet, DeliveryMethod deliveryMethod)
     {
-        Send(new OutboundPacket(peer, packet, deliveryMethod));
+        Send(new OutboundNetPeerPacket(peer, packet, deliveryMethod));
     }
 
     public void Stop()
