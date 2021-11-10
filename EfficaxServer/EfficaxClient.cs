@@ -2,13 +2,18 @@
 
 public class EfficaxClient
 {
+    private readonly EfficaxServer efficaxServer;
+
     public readonly ulong guid;
+    public readonly NetPeer client;
 
     private readonly ConcurrentStack<ulong> zones = new();
 
-    public EfficaxClient(ulong guid)
+    public EfficaxClient(EfficaxServer efficaxServer, ulong guid, NetPeer client)
     {
+        this.efficaxServer = efficaxServer;
         this.guid = guid;
+        this.client = client;
     }
 
     public ulong GetCurrentZone()

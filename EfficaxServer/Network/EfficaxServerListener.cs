@@ -41,7 +41,7 @@ public class EfficaxServerListener : INetEventListener
         efficaxServer.random.NextBytes(buf);
         ulong guid = BitConverter.ToUInt64(buf);
 
-        efficaxServer.peerClientMap.Add(peer, new EfficaxClient(guid));
+        efficaxServer.peerClientMap.Add(peer, new EfficaxClient(guid, peer));
     }
 
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)

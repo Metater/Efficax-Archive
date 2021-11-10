@@ -1,6 +1,6 @@
-﻿namespace EfficaxServer.Zone;
+﻿namespace EfficaxServer.Zone; //{}
 
 public class EfficaxZone
 {
-
+    
 }
