@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EfficaxShared\EfficaxShared.csproj" />
-	<!--<ProjectReference Include="..\EfficaxShared\EfficaxShared.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />-->
   </ItemGroup>
 
 </Project>

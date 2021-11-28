@@ -26,7 +26,7 @@ namespace EfficaxShared.Network.Packets
         {
             writer.Put(Type);
             if (packets.Count <= 0 || packets.Count > 256)
-                throw new Exception("Cannot group no packets more than 256 packets");
+                throw new Exception("Cannot form group packets with more than 256 packets");
             writer.Put((byte)(packets.Count - 1));
             foreach (Packet packet in packets)
                 packet.WriteOut(writer);
