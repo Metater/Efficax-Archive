@@ -11,6 +11,5 @@ internal enum SessionState
     Connecting,
     WaitingForRSAPublicKey,
     SentAESKey,
-    WaitingForAuthToken,
     Open
 }

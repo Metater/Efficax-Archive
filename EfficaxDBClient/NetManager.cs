@@ -73,19 +73,18 @@ internal sealed class NetManager : TcpClient
                         sessionState = SessionState.SentAuthToken;
                         return;
                     case SessionState.SentAuthToken:
-                        return;
-                    default:
-                        Disconnect();
+                        DBPacketHeaderCB response = (DBPacketHeaderCB)data[0];
+                        if (response != DBPacketHeaderCB.SessionConfirmation) break;
+                        sessionState = SessionState.Open;
                         return;
                 }
             }
-            catch (Exception)
-            {
-                Disconnect();
-                return;
-            }
+            catch (Exception) {}
+            DisconnectAndStop();
+            return;
         }
         // Connection is open
+
     }
 
     protected override void OnError(SocketError error)

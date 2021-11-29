@@ -8,6 +8,7 @@ using NetCoreServer;
 using Buffer = System.Buffer;
 using BitManipulation;
 using EfficaxShared.Utils;
+using EfficaxShared.DB;
 using System.Security.Cryptography;
 
 namespace EfficaxDB; //{}
@@ -61,9 +62,8 @@ internal class NetSession : TcpSession
                     case SessionState.SentAESKey:
                         ulong authToken = CryptoUtils.AESDecrypt(aesKey, data);
                         if (!db.dbAuthTokens.Contains(authToken)) break;
-                        return;
-                    case SessionState.WaitingForAuthToken:
-                        
+                        SendAsync(new byte[] { DBPacketHeaderCB.SessionConfirmation });
+                        sessionState = SessionState.Open;
                         return;
                 }
             }
