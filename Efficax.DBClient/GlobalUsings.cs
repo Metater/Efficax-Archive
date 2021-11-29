@@ -3,7 +3,7 @@ global using System.Security.Cryptography;
 
 global using TcpClient = NetCoreServer.TcpClient;
 
-global using EfficaxShared.Utils;
-global using EfficaxShared.DB;
+global using Efficax.Shared.Utils;
+global using Efficax.Shared.DB;
 
 global using BitManipulation;

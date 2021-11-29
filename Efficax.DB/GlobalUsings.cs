@@ -6,7 +6,7 @@ global using NetCoreServer;
 
 global using Efficax.DB;
 
-global using EfficaxShared.Utils;
-global using EfficaxShared.DB;
+global using Efficax.Shared.Utils;
+global using Efficax.Shared.DB;
 
 global using BitManipulation;

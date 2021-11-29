@@ -10,4 +10,8 @@
     <PackageReference Include="NetCoreServer" Version="5.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Efficax.Shared\Efficax.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
