@@ -4,7 +4,7 @@ public class DBClient
 {
     internal NetManager netManager;
 
-    private ulong authToken;
+    internal ulong authToken;
 
     public DBClient()
     {

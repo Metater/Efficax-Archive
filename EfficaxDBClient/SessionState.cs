@@ -9,7 +9,8 @@ namespace EfficaxDBClient; //{}
 internal enum ConnectionState
 {
     Connecting,
-    SentRSAPublicKeyAndAuthToken,
+    SentRSAPublicKey,
+    SentAuthToken,
     WaitingForConfirmation,
     Open
 }

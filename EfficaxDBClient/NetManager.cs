@@ -35,14 +35,20 @@ internal sealed class NetManager : TcpClient
 
     protected override void OnConnected()
     {
+        if (sessionState != SessionState.Connecting)
+        {
+            DisconnectAndStop();
+            return;
+        }
+
         Console.WriteLine($"Chat TCP client connected a new session with Id {Id}");
         (RSAParameters, RSAParameters) rsaKeyPair = CryptoUtils.GenRSAKeyPair(2048);
         rsaPrivateKey = rsaKeyPair.Item2;
         string rsaPublicKeyString = CryptoUtils.GetRSAPublicKeyString(rsaKeyPair.Item1);
         writer.Reset();
         writer.Put(rsaPublicKeyString, 8);
-
-        SendAsync()
+        SendAsync(writer.Assemble());
+        sessionState = SessionState.SentRSAPublicKey;
     }
 
     protected override void OnDisconnected()
@@ -55,6 +61,34 @@ internal sealed class NetManager : TcpClient
         byte[] data = new byte[size];
         Buffer.BlockCopy(buffer, (int)offset, data, 0, (int)size);
         reader.SetSource(data);
+        if (sessionState != SessionState.Open)
+        {
+            try
+            {
+                switch (sessionState)
+                {
+                    case SessionState.SentRSAPublicKey:
+                        aesKey = CryptoUtils.RSADecrypt(data, rsaPrivateKey);
+                        SendAsync(AESEncrypt(aesKey, BitConverter.GetBytes(dbClient.authToken)));
+                        sessionState = SessionState.SentAuthToken;
+                        return;
+                    case SessionState.SentAuthToken:
+                        
+                        return;
+                    case SessionState.WaitingForConfirmation:
+                        return;
+                    default:
+                        Disconnect();
+                        return;
+                }
+            }
+            catch (Exception)
+            {
+                Disconnect();
+                return;
+            }
+        }
+        // Connection is open
     }
 
     protected override void OnError(SocketError error)

@@ -9,7 +9,8 @@ namespace EfficaxDB; //{}
 internal enum SessionState
 {
     Connecting,
-    WaitingForRSAPublicKeyAndAuthToken,
+    WaitingForRSAPublicKey,
     SentAESKey,
+    WaitingForAuthToken,
     Open
 }
