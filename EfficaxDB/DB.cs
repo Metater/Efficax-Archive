@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EfficaxDB;
+namespace EfficaxDB; //{}
 
 public class DB
 {
     //public ConcurrentDictionary<>
 
-    public ConcurrentBag<ulong> dbAuthTokens = new();
-    public int port;
+    public readonly ConcurrentBag<ulong> dbAuthTokens = new();
+    public readonly int port;
 
     public DB()
     {

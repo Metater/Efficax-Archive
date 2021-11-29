@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EfficaxDBClient;
+namespace EfficaxDBClient; //{}
 
 internal enum ConnectionState
 {
     Connecting,
-    SentRSAPublicKey,
-    SentAuthToken,
+    SentRSAPublicKeyAndAuthToken,
+    WaitingForConfirmation,
     Open
 }

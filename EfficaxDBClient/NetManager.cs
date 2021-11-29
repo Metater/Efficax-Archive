@@ -6,14 +6,20 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using TcpClient = NetCoreServer.TcpClient;
+using EfficaxShared.Utils;
 
-namespace EfficaxDBClient;
+namespace EfficaxDBClient; //{}
 
 internal sealed class NetManager : TcpClient
 {
     private DBClient dbClient;
 
-    //private bool stop;
+    private BitReader reader = new();
+    private BitWriter writer = new();
+    private SessionState sessionState = SessionState.Connecting;
+
+    private RSAParameters rsaPrivateKey;
+    private byte[]? aesKey;
 
     public NetManager(DBClient dbClient, string address, int port) : base(address, port)
     {
@@ -22,7 +28,6 @@ internal sealed class NetManager : TcpClient
 
     public void DisconnectAndStop()
     {
-        //stop = true;
         DisconnectAsync();
         while (IsConnected)
             Thread.Yield();
@@ -31,21 +36,25 @@ internal sealed class NetManager : TcpClient
     protected override void OnConnected()
     {
         Console.WriteLine($"Chat TCP client connected a new session with Id {Id}");
+        (RSAParameters, RSAParameters) rsaKeyPair = CryptoUtils.GenRSAKeyPair(2048);
+        rsaPrivateKey = rsaKeyPair.Item2;
+        string rsaPublicKeyString = CryptoUtils.GetRSAPublicKeyString(rsaKeyPair.Item1);
+        writer.Reset();
+        writer.Put(rsaPublicKeyString, 8);
+
+        SendAsync()
     }
 
     protected override void OnDisconnected()
     {
         Console.WriteLine($"Chat TCP client disconnected a session with Id {Id}");
-
-        //Thread.Sleep(1000);
-
-        //if (!stop)
-            //ConnectAsync();
     }
 
     protected override void OnReceived(byte[] buffer, long offset, long size)
     {
-        Console.WriteLine(Encoding.UTF8.GetString(buffer, (int)offset, (int)size));
+        byte[] data = new byte[size];
+        Buffer.BlockCopy(buffer, (int)offset, data, 0, (int)size);
+        reader.SetSource(data);
     }
 
     protected override void OnError(SocketError error)

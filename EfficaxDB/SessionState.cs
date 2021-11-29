@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EfficaxDB;
+namespace EfficaxDB; //{}
 
 internal enum SessionState
 {
     Connecting,
-    WaitingForRSAPublicKey,
+    WaitingForRSAPublicKeyAndAuthToken,
     SentAESKey,
     Open
 }

@@ -10,7 +10,7 @@ using BitManipulation;
 using EfficaxShared.Utils;
 using System.Security.Cryptography;
 
-namespace EfficaxDB;
+namespace EfficaxDB; //{}
 
 internal class NetSession : TcpSession
 {
@@ -55,7 +55,7 @@ internal class NetSession : TcpSession
                     sessionState = SessionState.SentAESKey;
                     return;
                 case SessionState.SentAESKey:
-
+                    
                     return;
                 case SessionState.Open:
                     break;
