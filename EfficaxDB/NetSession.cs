@@ -60,7 +60,7 @@ internal class NetSession : TcpSession
                         return;
                     case SessionState.SentAESKey:
                         ulong authToken = CryptoUtils.AESDecrypt(aesKey, data);
-                        if (!db.dbAuthTokens.Contains(authToken)) 
+                        if (!db.dbAuthTokens.Contains(authToken)) break;
                         return;
                     case SessionState.WaitingForAuthToken:
                         
