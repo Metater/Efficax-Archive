@@ -11,6 +11,5 @@ internal enum ConnectionState
     Connecting,
     SentRSAPublicKey,
     SentAuthToken,
-    WaitingForConfirmation,
     Open
 }

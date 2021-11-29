@@ -69,13 +69,10 @@ internal sealed class NetManager : TcpClient
                 {
                     case SessionState.SentRSAPublicKey:
                         aesKey = CryptoUtils.RSADecrypt(data, rsaPrivateKey);
-                        SendAsync(AESEncrypt(aesKey, BitConverter.GetBytes(dbClient.authToken)));
+                        SendAsync(CryptoUtils.AESEncrypt(aesKey, BitConverter.GetBytes(dbClient.authToken)));
                         sessionState = SessionState.SentAuthToken;
                         return;
                     case SessionState.SentAuthToken:
-                        
-                        return;
-                    case SessionState.WaitingForConfirmation:
                         return;
                     default:
                         Disconnect();

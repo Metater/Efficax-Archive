@@ -11,7 +11,7 @@ public class DB
 {
     //public ConcurrentDictionary<>
 
-    public readonly ConcurrentBag<ulong> dbAuthTokens = new();
+    public readonly List<ulong> dbAuthTokens = new();
     public readonly int port;
 
     public DB()
