@@ -63,7 +63,6 @@ internal class DBSession : TcpClient
     {
         byte[] data = new byte[size];
         Buffer.BlockCopy(buffer, (int)offset, data, 0, (int)size);
-        reader.SetSource(data);
         if (sessionState != SessionState.Open)
         {
             try
@@ -89,12 +88,18 @@ internal class DBSession : TcpClient
             return;
         }
         // Connection is open
-
+        byte[] decrypted = CryptoUtils.AESDecrypt(aesKey, data);
+        reader.SetSource(decrypted);
     }
 
     protected override void OnError(SocketError error)
     {
         Console.WriteLine($"[DB Client] Caught an error with code {error}");
+    }
+
+    private bool SendAESAsync(byte[] data)
+    {
+        return SendAsync(CryptoUtils.AESEncrypt(aesKey, data));
     }
 
 }
