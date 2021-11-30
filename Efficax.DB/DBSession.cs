@@ -31,7 +31,6 @@ internal class DBSession : TcpSession
 
     protected override void OnDisconnected()
     {
-        Dispose();
         Console.WriteLine($"[Client DB Session] {sessionInfo} disconnected");
     }
 
