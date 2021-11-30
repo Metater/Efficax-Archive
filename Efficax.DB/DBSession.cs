@@ -13,6 +13,8 @@ internal class DBSession : TcpSession
     private byte[]? aesKey;
     private ulong authToken;
 
+    private string sessionInfo;
+
     public DBSession(EfficaxDB db, TcpServer server) : base(server)
     {
         this.db = db;
@@ -20,7 +22,8 @@ internal class DBSession : TcpSession
 
     protected override void OnConnected()
     {
-        Console.WriteLine($"Chat TCP session with Id {Id} connected!");
+        sessionInfo = $"{Id} {Socket.RemoteEndPoint}";
+        Console.WriteLine($"[Client DB Session] {sessionInfo} initiating DB session");
         sessionState = SessionState.WaitingForRSAPublicKey;
         // put in external timeout verifier
         // eg: if not open in 5 sec disconnect
@@ -28,7 +31,8 @@ internal class DBSession : TcpSession
 
     protected override void OnDisconnected()
     {
-        Console.WriteLine($"Chat TCP session with Id {Id} disconnected!");
+        Dispose();
+        Console.WriteLine($"[Client DB Session] {sessionInfo} disconnected");
     }
 
     protected override void OnReceived(byte[] buffer, long offset, long size)
@@ -43,20 +47,23 @@ internal class DBSession : TcpSession
                 switch (sessionState)
                 {
                     case SessionState.WaitingForRSAPublicKey:
-                        RSAParameters rsaPublicKey = CryptoUtils.GetRSAPublicKey(reader.GetString(8));
+                        RSAParameters rsaPublicKey = CryptoUtils.GetRSAPublicKey(reader.GetString(16));
                         aesKey = CryptoUtils.GenAESKey();
                         SendAsync(CryptoUtils.RSAEncrypt(aesKey, rsaPublicKey));
                         sessionState = SessionState.SentAESKey;
+                        Console.WriteLine($"[Client DB Session] {sessionInfo} sent RSA public key, sending AES key");
                         return;
                     case SessionState.SentAESKey:
                         ulong authToken = BitConverter.ToUInt64(CryptoUtils.AESDecrypt(aesKey, data));
                         if (!db.dbAuthTokens.Contains(authToken)) break;
                         SendAsync(new byte[] { (byte)DBPacketHeaderCB.SessionConfirmation });
                         sessionState = SessionState.Open;
+                        Console.WriteLine($"[Client DB Session] {sessionInfo} verified auth token, sending confirmation");
                         return;
                 }
             }
             catch (Exception) {}
+            Console.WriteLine($"[Client DB Session] {sessionInfo}, error in connection protocol, disconnecting");
             Disconnect();
             return;
         }
@@ -66,6 +73,6 @@ internal class DBSession : TcpSession
 
     protected override void OnError(SocketError error)
     {
-        Console.WriteLine($"Chat TCP session caught an error with code {error}");
+        Console.WriteLine($"[Client DB Session] Caught an error with code {error}");
     }
 }

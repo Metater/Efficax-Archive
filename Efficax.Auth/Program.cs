@@ -2,7 +2,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 
-DBClient? dbClient = null;
+DBClient dbClient = new DBClient();
 
 Random random = new Random();
 byte[] a = new byte[8];
@@ -12,12 +12,8 @@ Console.WriteLine(e);
 
 app.MapGet("/auth", (ctx) =>
 {
-    if (dbClient == null)
-    {
-        dbClient = new DBClient();
-        return ctx.Response.WriteAsync("Making db client!");
-    }
-    return ctx.Response.WriteAsync("Already made db client!");
+    dbClient.Disconnect();
+    return ctx.Response.WriteAsync("e");
 });
 
 app.Run();

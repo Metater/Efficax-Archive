@@ -11,6 +11,8 @@ internal class DBSession : TcpClient
     private RSAParameters rsaPrivateKey;
     private byte[]? aesKey;
 
+    private bool stop = false;
+
     public DBSession(DBClient dbClient, string address, int port) : base(address, port)
     {
         this.dbClient = dbClient;
@@ -18,6 +20,8 @@ internal class DBSession : TcpClient
 
     public void DisconnectAndStop()
     {
+        Console.WriteLine($"[DB Client] Triggered disconnect and stop on {Id}");
+        stop = true;
         DisconnectAsync();
         while (IsConnected)
             Thread.Yield();
@@ -31,19 +35,28 @@ internal class DBSession : TcpClient
             return;
         }
 
-        Console.WriteLine($"Chat TCP client connected a new session with Id {Id}");
         (RSAParameters, RSAParameters) rsaKeyPair = CryptoUtils.GenRSAKeyPair(2048);
         rsaPrivateKey = rsaKeyPair.Item2;
         string rsaPublicKeyString = CryptoUtils.GetRSAPublicKeyString(rsaKeyPair.Item1);
         writer.Reset();
-        writer.Put(rsaPublicKeyString, 8);
+        writer.Put(rsaPublicKeyString, 16);
         SendAsync(writer.Assemble());
         sessionState = SessionState.SentRSAPublicKey;
+        Console.WriteLine($"[DB Client] {Id} initiating, sending RSA key");
     }
 
     protected override void OnDisconnected()
     {
-        Console.WriteLine($"Chat TCP client disconnected a session with Id {Id}");
+        Console.WriteLine($"[DB Client] {Id} disconnected");
+
+        Thread.Sleep(1000);
+
+        if (!stop)
+        {
+            sessionState = SessionState.Connecting;
+            Console.WriteLine($"[DB Client] {Id} attempting reconnect");
+            ConnectAsync();
+        }
     }
 
     protected override void OnReceived(byte[] buffer, long offset, long size)
@@ -61,11 +74,13 @@ internal class DBSession : TcpClient
                         aesKey = CryptoUtils.RSADecrypt(data, rsaPrivateKey);
                         SendAsync(CryptoUtils.AESEncrypt(aesKey, BitConverter.GetBytes(dbClient.authToken)));
                         sessionState = SessionState.SentAuthToken;
+                        Console.WriteLine($"[DB Client] {Id} received AES key, sending auth token");
                         return;
                     case SessionState.SentAuthToken:
                         DBPacketHeaderCB response = (DBPacketHeaderCB)data[0];
                         if (response != DBPacketHeaderCB.SessionConfirmation) break;
                         sessionState = SessionState.Open;
+                        Console.WriteLine($"[DB Client] {Id} session opened");
                         return;
                 }
             }
@@ -79,7 +94,7 @@ internal class DBSession : TcpClient
 
     protected override void OnError(SocketError error)
     {
-        Console.WriteLine($"Chat TCP client caught an error with code {error}");
+        Console.WriteLine($"[DB Client] Caught an error with code {error}");
     }
 
 }
