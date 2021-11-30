@@ -1,6 +1,6 @@
 ﻿namespace Efficax.DB; //{}
 
-internal enum SessionState
+public enum SessionState
 {
     Connecting,
     WaitingForRSAPublicKey,

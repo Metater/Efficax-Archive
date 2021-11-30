@@ -2,7 +2,7 @@
 
 namespace Efficax.DB; //{}
 
-internal class DBSession : TcpSession
+public class DBSession : TcpSession
 {
     private EfficaxDB db;
 
@@ -54,7 +54,7 @@ internal class DBSession : TcpSession
                         return;
                     case SessionState.SentAESKey:
                         ulong authToken = BitConverter.ToUInt64(CryptoUtils.AESDecrypt(aesKey, data));
-                        if (!db.dbAuthTokens.Contains(authToken)) break;
+                        if (!db.secrets.dbAuthTokens.Contains(authToken)) break;
                         SendAsync(new byte[] { (byte)DBPacketHeaderCB.SessionConfirmation });
                         sessionState = SessionState.Open;
                         Console.WriteLine($"[Client DB Session] {sessionInfo} verified auth token, sending confirmation");

@@ -1,6 +1,6 @@
-﻿namespace Efficax.DB;
+﻿namespace Efficax.DB; //{}
 
-internal class DBServer : TcpServer
+public class DBServer : TcpServer
 {
     private EfficaxDB db;
 

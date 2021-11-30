@@ -1,4 +1,4 @@
-﻿namespace Efficax.DBClient;
+﻿namespace Efficax.DBClient; //{}
 
 public class DBClient
 {
