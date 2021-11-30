@@ -20,7 +20,6 @@ public class DBClient
 
     public void Disconnect()
     {
-        //dbSession.DisconnectAndStop();
-        dbSession.DisconnectAsync();
+        dbSession.DisconnectAndStop();
     }
 }
