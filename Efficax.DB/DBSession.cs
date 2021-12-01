@@ -2,7 +2,7 @@
 
 namespace Efficax.DB; //{}
 
-internal class DBSession : TcpSession
+public class DBSession : TcpSession
 {
     private EfficaxDB db;
 
@@ -31,7 +31,6 @@ internal class DBSession : TcpSession
 
     protected override void OnDisconnected()
     {
-        Dispose();
         Console.WriteLine($"[Client DB Session] {sessionInfo} disconnected");
     }
 
@@ -39,7 +38,6 @@ internal class DBSession : TcpSession
     {
         byte[] data = new byte[size];
         Buffer.BlockCopy(buffer, (int)offset, data, 0, (int)size);
-        reader.SetSource(data);
         if (sessionState != SessionState.Open)
         {
             try
@@ -47,6 +45,7 @@ internal class DBSession : TcpSession
                 switch (sessionState)
                 {
                     case SessionState.WaitingForRSAPublicKey:
+                        reader.SetSource(data);
                         RSAParameters rsaPublicKey = CryptoUtils.GetRSAPublicKey(reader.GetString(16));
                         aesKey = CryptoUtils.GenAESKey();
                         SendAsync(CryptoUtils.RSAEncrypt(aesKey, rsaPublicKey));
@@ -55,7 +54,7 @@ internal class DBSession : TcpSession
                         return;
                     case SessionState.SentAESKey:
                         ulong authToken = BitConverter.ToUInt64(CryptoUtils.AESDecrypt(aesKey, data));
-                        if (!db.dbAuthTokens.Contains(authToken)) break;
+                        if (!db.secrets.dbAuthTokens.Contains(authToken)) break;
                         SendAsync(new byte[] { (byte)DBPacketHeaderCB.SessionConfirmation });
                         sessionState = SessionState.Open;
                         Console.WriteLine($"[Client DB Session] {sessionInfo} verified auth token, sending confirmation");
@@ -68,11 +67,18 @@ internal class DBSession : TcpSession
             return;
         }
         // Connection is open
-
+        byte[] decrypted = CryptoUtils.AESDecrypt(aesKey, data);
+        reader.SetSource(decrypted);
+        
     }
 
     protected override void OnError(SocketError error)
     {
         Console.WriteLine($"[Client DB Session] Caught an error with code {error}");
+    }
+
+    private bool SendAESAsync(byte[] data)
+    {
+        return SendAsync(CryptoUtils.AESEncrypt(aesKey, data));
     }
 }

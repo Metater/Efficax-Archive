@@ -1,4 +1,4 @@
-﻿namespace Efficax.DBClient;
+﻿namespace Efficax.DBClient; //{}
 
 public class DBClient
 {
@@ -20,7 +20,6 @@ public class DBClient
 
     public void Disconnect()
     {
-        //dbSession.DisconnectAndStop();
-        dbSession.DisconnectAsync();
+        dbSession.DisconnectAndStop();
     }
 }
