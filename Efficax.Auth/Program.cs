@@ -10,10 +10,16 @@ random.NextBytes(a);
 ulong e = BitConverter.ToUInt64(a);
 Console.WriteLine(e);
 
-app.MapGet("/auth", (ctx) =>
+HttpClient client = new HttpClient();
+
+app.MapGet("/auth", async (ctx) =>
 {
     dbClient.Disconnect();
-    return ctx.Response.WriteAsync("e");
+    HttpResponseMessage response = await client.GetAsync("https://api.coinbase.com/v2/currencies");
+    string data = "API unavailable.";
+    if (response.IsSuccessStatusCode)
+        data = await response.Content.ReadAsStringAsync();
+    await ctx.Response.WriteAsync(data);
 });
 
 app.Run();

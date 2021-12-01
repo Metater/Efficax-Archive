@@ -13,7 +13,7 @@ internal class DBSession : TcpSession
     private byte[]? aesKey;
     private ulong authToken;
 
-    private string sessionInfo;
+    private string? sessionInfo;
 
     public DBSession(EfficaxDB db, TcpServer server) : base(server)
     {
