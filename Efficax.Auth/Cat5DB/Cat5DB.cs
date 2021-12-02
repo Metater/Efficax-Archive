@@ -6,11 +6,11 @@ public class Cat5DB
     public async Task ExecuteAsync(Func<Database, DBResult> action)
     {
         TaskCompletionSource<DBResult> resultTCS = new();
-        Action action = (result) =>
+        Action complete = (result) =>
         {
             resultTCS.SetResult(result);
         }
-
+        // https://devblogs.microsoft.com/premier-developer/the-danger-of-taskcompletionsourcet-class/
     }
 
     public void QueueExecute(DBAction action)
