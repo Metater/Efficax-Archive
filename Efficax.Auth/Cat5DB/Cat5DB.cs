@@ -1,20 +1,30 @@
 
 public class Cat5DB
 {
-    private ConcurrentQueue<(Func<Database, DBResult>, Action>))> actions = new();
+    private ConcurrentQueue<(Action<Database>, TaskCompletionSource>))> actionQueue = new();
 
-    public async Task ExecuteAsync(Func<Database, DBResult> action)
+    private Database database;
+
+    public Cat5DB()
     {
-        TaskCompletionSource<DBResult> resultTCS = new();
-        Action complete = (result) =>
-        {
-            resultTCS.SetResult(result);
-        }
-        // https://devblogs.microsoft.com/premier-developer/the-danger-of-taskcompletionsourcet-class/
+        database = new Database();
+    }
+
+    public async Task ExecuteAsync(Action<Database> action)
+    {
+        TaskCompletionSource tcs = new();
+        actionQueue.Enqueue((action, tcs));
+        return tcs.Task;
     }
 
     public void QueueExecute(DBAction action)
     {
+        actionQueue.Enqueue((action, null));
+    }
 
+    public void Execute()
+    {
+        int actionCount = actionQueue.Count;
+        
     }
 }
