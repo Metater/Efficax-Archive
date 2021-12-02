@@ -30,7 +30,7 @@ public class Cat5DB
             if (actionQueue.TryDequeue(out (Action<Database>, TaskCompletionSource>) action))
             {
                 action.Item1(database);
-                action.Item2.SetResult();
+                action.Item2?.SetResult();
             }
             else break;
         }
