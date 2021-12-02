@@ -1,7 +1,7 @@
 
 public class Cat5DB
 {
-    private ConcurrentQueue<(Action<Database>, TaskCompletionSource>))> actionQueue = new();
+    private ConcurrentQueue<(Action<Database>, TaskCompletionSource>)> actionQueue = new();
 
     private Database database;
 
@@ -25,6 +25,14 @@ public class Cat5DB
     public void Execute()
     {
         int actionCount = actionQueue.Count;
-        
+        for (int i = 0; i < actionCount; i++)
+        {
+            if (actionQueue.TryDequeue(out (Action<Database>, TaskCompletionSource>) action))
+            {
+                action.Item1(database);
+                action.Item2.SetResult();
+            }
+            else break;
+        }
     }
 }
